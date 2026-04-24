@@ -1,463 +1,429 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lucas | Analista de TI N3 & Security</title>
-  <meta name="description" content="Portfólio de Lucas — Analista de TI N3 especialista em segurança de servidores, automação Python e PowerShell." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Lucas | Cibersegurança · TI N3 · Dev</title>
+  <meta name="description" content="Portfólio de Lucas — Analista de TI N3, Cibersegurança, Automação Python e PowerShell."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
-    /* ── Reset & Base ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg:       #020c1b;
-      --bg2:      #0a1628;
-      --bg3:      #0d1f38;
-      --cyan:     #00d4ff;
-      --cyan2:    #7ecfff;
-      --cyan3:    #b3e8ff;
-      --text:     #c9d1d9;
-      --muted:    #7ecfff;
-      --border:   rgba(0,212,255,.15);
-      --glow:     0 0 20px rgba(0,212,255,.25);
+      --bg:    #020c1b;
+      --bg2:   #071222;
+      --bg3:   #0a1a2e;
+      --cyan:  #00d4ff;
+      --cyan2: #7ecfff;
+      --cyan3: #b3e8ff;
+      --text:  #c9d1d9;
+      --muted: #5d8aa8;
+      --border:rgba(0,212,255,.12);
+      --glow:  0 0 30px rgba(0,212,255,.3);
     }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      overflow-x: hidden;
-    }
-    a { color: var(--cyan); text-decoration: none; }
-    a:hover { color: var(--cyan3); }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+    a{color:var(--cyan);text-decoration:none}
+    ::-webkit-scrollbar{width:4px}
+    ::-webkit-scrollbar-thumb{background:var(--cyan);border-radius:4px}
 
-    /* ── Scrollbar ── */
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 4px; }
+    /* Progress bar */
+    #progress{position:fixed;top:0;left:0;height:2px;background:var(--cyan);z-index:200;width:0%;transition:width .1s}
 
-    /* ── Canvas background ── */
-    #matrix-bg {
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 0; opacity: .07; pointer-events: none;
-    }
+    /* Canvas 3D */
+    #webgl{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
 
-    /* ── Nav ── */
-    nav {
-      position: fixed; top: 0; width: 100%; z-index: 100;
-      background: rgba(2,12,27,.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 5%;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 60px;
+    /* Nav */
+    nav{
+      position:fixed;top:0;width:100%;z-index:100;
+      background:rgba(2,12,27,.8);backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+      padding:0 6%;height:64px;
+      display:flex;align-items:center;justify-content:space-between;
     }
-    .nav-logo {
-      font-family: 'Share Tech Mono', monospace;
-      color: var(--cyan); font-size: 1.1rem; font-weight: 700;
+    .nav-logo{
+      font-family:'Share Tech Mono',monospace;
+      font-size:1.1rem;color:var(--cyan);letter-spacing:.05em;
     }
-    .nav-links { display: flex; gap: 32px; list-style: none; }
-    .nav-links a {
-      font-size: .85rem; color: var(--muted); letter-spacing: .04em;
-      transition: color .2s;
+    .nav-logo span{color:#fff}
+    .nav-links{display:flex;gap:30px;list-style:none}
+    .nav-links a{font-size:.82rem;color:var(--muted);letter-spacing:.06em;transition:color .2s}
+    .nav-links a:hover,.nav-links a.active{color:var(--cyan)}
+
+    /* ── HERO ── */
+    #hero{
+      position:relative;z-index:1;
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      flex-direction:column;text-align:center;padding:80px 20px 60px;
     }
-    .nav-links a:hover { color: var(--cyan); }
+    .hero-badge{
+      font-family:'Share Tech Mono',monospace;font-size:.78rem;
+      color:var(--cyan);border:1px solid rgba(0,212,255,.3);
+      padding:5px 16px;border-radius:20px;margin-bottom:28px;
+      background:rgba(0,212,255,.05);display:inline-block;
+      animation:fadeDown .8s ease both;
+    }
+    .hero-name{
+      font-size:clamp(3.5rem,10vw,7rem);font-weight:800;
+      color:#fff;line-height:1;margin-bottom:6px;
+      position:relative;display:inline-block;
+      animation:fadeUp .8s ease .2s both;
+    }
+    .hero-name .glitch{
+      position:relative;display:inline-block;
+      text-shadow:0 0 40px rgba(0,212,255,.4);
+    }
+    .hero-name .glitch::before,
+    .hero-name .glitch::after{
+      content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;
+    }
+    .hero-name .glitch::before{
+      color:#ff00c8;clip-path:polygon(0 0,100% 0,100% 35%,0 35%);
+      transform:translate(-3px);animation:glitch1 3s infinite;opacity:.7;
+    }
+    .hero-name .glitch::after{
+      color:#00d4ff;clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%);
+      transform:translate(3px);animation:glitch2 3s infinite;opacity:.7;
+    }
+    @keyframes glitch1{0%,95%,100%{transform:translate(-3px)}96%{transform:translate(3px)}97%{transform:translate(-8px)}}
+    @keyframes glitch2{0%,95%,100%{transform:translate(3px)}96%{transform:translate(-3px)}97%{transform:translate(8px)}}
+    .hero-dot{color:var(--cyan)}
+    .hero-sub{
+      font-family:'Share Tech Mono',monospace;
+      font-size:clamp(.9rem,2.5vw,1.15rem);
+      color:var(--cyan2);margin-top:20px;margin-bottom:40px;
+      min-height:1.6em;animation:fadeUp .8s ease .4s both;
+    }
+    .cursor{animation:blink .8s infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+    .hero-btns{
+      display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
+      animation:fadeUp .8s ease .6s both;
+    }
+    .btn{
+      padding:12px 30px;border-radius:6px;font-size:.88rem;
+      font-weight:600;cursor:pointer;transition:all .25s;
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:'Inter',sans-serif;border:none;
+    }
+    .btn-primary{background:var(--cyan);color:var(--bg)}
+    .btn-primary:hover{background:transparent;color:var(--cyan);border:2px solid var(--cyan);box-shadow:var(--glow);padding:10px 28px}
+    .btn-outline{background:transparent;color:var(--cyan);border:2px solid var(--border)}
+    .btn-outline:hover{border-color:var(--cyan);box-shadow:var(--glow)}
+    .scroll-line{
+      position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+      font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--muted);
+      animation:float 2s ease-in-out infinite;
+    }
+    .scroll-line::after{content:'';width:1px;height:44px;background:linear-gradient(var(--cyan),transparent)}
+    @keyframes float{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+    @keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none}}
 
     /* ── Sections ── */
-    section { position: relative; z-index: 1; }
-
-    /* ── Hero ── */
-    #hero {
-      min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column; text-align: center;
-      padding: 80px 20px 40px;
+    .section{position:relative;z-index:1;padding:110px 6%}
+    .section-alt{background:rgba(7,18,34,.7);backdrop-filter:blur(4px)}
+    .s-label{
+      font-family:'Share Tech Mono',monospace;font-size:.75rem;
+      color:var(--cyan);letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px;
     }
-    .hero-tag {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: .85rem; color: var(--cyan);
-      border: 1px solid var(--border);
-      padding: 4px 14px; border-radius: 20px;
-      margin-bottom: 24px; display: inline-block;
-      background: rgba(0,212,255,.06);
-    }
-    .hero-name {
-      font-size: clamp(3rem, 9vw, 6.5rem);
-      font-weight: 700; color: #fff;
-      line-height: 1.1; margin-bottom: 16px;
-    }
-    .hero-name span { color: var(--cyan); }
-    .hero-sub {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: clamp(.9rem, 2.5vw, 1.15rem);
-      color: var(--muted); margin-bottom: 36px;
-      min-height: 1.6em;
-    }
-    .cursor { animation: blink .8s infinite; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
-    .btn {
-      padding: 11px 28px; border-radius: 6px;
-      font-size: .9rem; font-weight: 600;
-      cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; gap: 8px;
-    }
-    .btn-primary {
-      background: var(--cyan); color: var(--bg);
-      border: 2px solid var(--cyan);
-    }
-    .btn-primary:hover { background: transparent; color: var(--cyan); box-shadow: var(--glow); }
-    .btn-outline {
-      background: transparent; color: var(--cyan);
-      border: 2px solid var(--border);
-    }
-    .btn-outline:hover { border-color: var(--cyan); box-shadow: var(--glow); color: var(--cyan3); }
-    .scroll-hint {
-      position: absolute; bottom: 36px;
-      font-size: .75rem; color: var(--muted);
-      display: flex; flex-direction: column; align-items: center; gap: 6px;
-      animation: float 2s ease-in-out infinite;
-    }
-    .scroll-hint::after {
-      content: ''; width: 1px; height: 40px;
-      background: linear-gradient(to bottom, var(--cyan), transparent);
-    }
-    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .s-label::before{content:'// '}
+    h2{font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:700;color:#fff;margin-bottom:56px}
+    h2 span{color:var(--cyan)}
 
     /* ── About ── */
-    #about { padding: 100px 5%; }
-    .section-title {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: .8rem; color: var(--cyan);
-      letter-spacing: .15em; text-transform: uppercase;
-      margin-bottom: 8px;
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;max-width:1100px;margin:0 auto}
+    @media(max-width:768px){.about-grid{grid-template-columns:1fr}}
+    .about-text p{color:var(--text);line-height:1.85;margin-bottom:16px;font-size:.95rem}
+    .about-text strong{color:var(--cyan)}
+    .info-list{list-style:none;margin-top:24px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .info-list li{
+      padding:10px 16px;border-bottom:1px solid var(--border);
+      font-size:.85rem;display:flex;gap:14px;align-items:center;
     }
-    .section-title::before { content: '// '; }
-    h2 {
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      font-weight: 700; color: #fff; margin-bottom: 48px;
+    .info-list li:last-child{border:none}
+    .info-label{color:var(--cyan);min-width:100px;font-family:'Share Tech Mono',monospace;font-size:.78rem}
+    .code-3d{
+      background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+      padding:24px;font-family:'Share Tech Mono',monospace;font-size:.8rem;
+      line-height:1.85;color:var(--text);
+      box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px rgba(0,212,255,.08);
+      transform:perspective(800px) rotateY(-4deg) rotateX(2deg);
+      transition:transform .4s ease;
     }
-    .about-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 48px; align-items: start; max-width: 1100px; margin: 0 auto;
-    }
-    @media(max-width:768px) { .about-grid { grid-template-columns: 1fr; } }
-    .about-text p {
-      color: var(--text); line-height: 1.8; margin-bottom: 16px; font-size: .95rem;
-    }
-    .about-text p strong { color: var(--cyan); }
-    .info-list { list-style: none; margin-top: 24px; }
-    .info-list li {
-      padding: 8px 0; border-bottom: 1px solid var(--border);
-      font-size: .87rem; display: flex; gap: 12px;
-    }
-    .info-list li:last-child { border: none; }
-    .info-label { color: var(--cyan); min-width: 90px; font-family: 'Share Tech Mono', monospace; }
-    .code-block {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 20px 24px;
-      font-family: 'Share Tech Mono', monospace; font-size: .82rem; line-height: 1.8;
-      color: var(--text);
-    }
-    .code-block .kw  { color: #ff79c6; }
-    .code-block .cl  { color: #50fa7b; }
-    .code-block .st  { color: #f1fa8c; }
-    .code-block .cm  { color: #6272a4; }
-    .code-block .cy  { color: var(--cyan); }
+    .code-3d:hover{transform:perspective(800px) rotateY(0deg) rotateX(0deg)}
+    .kw{color:#ff79c6}.cl{color:#50fa7b}.st{color:#f1fa8c}.cm{color:#4a5568}.cy{color:var(--cyan)}
+    .dot-bar{width:50px;height:3px;background:var(--bg3);border-radius:2px;display:inline-block;margin:0 3px}
+    .dot-red{background:#ff5f57}.dot-yel{background:#febc2e}.dot-grn{background:#28c840}
 
     /* ── Skills ── */
-    #skills { padding: 100px 5%; background: var(--bg2); }
-    .skills-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px; max-width: 1100px; margin: 0 auto;
+    .skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px;max-width:1100px;margin:0 auto}
+    .skill-card{
+      background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:22px 24px;
+      transition:all .3s;position:relative;overflow:hidden;
     }
-    .skill-card {
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 10px; padding: 20px 22px;
-      transition: border-color .2s, box-shadow .2s;
+    .skill-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+      transform:scaleX(0);transition:transform .4s;
     }
-    .skill-card:hover { border-color: var(--cyan); box-shadow: var(--glow); }
-    .skill-card h4 { font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: var(--cyan); margin-bottom: 16px; }
-    .skill-item { margin-bottom: 12px; }
-    .skill-name { display: flex; justify-content: space-between; font-size: .82rem; margin-bottom: 5px; }
-    .skill-name span:last-child { color: var(--cyan); font-family: 'Share Tech Mono', monospace; }
-    .skill-bar { background: var(--bg3); border-radius: 4px; height: 5px; overflow: hidden; }
-    .skill-fill {
-      height: 100%; border-radius: 4px;
-      background: linear-gradient(90deg, #0a2a4a, var(--cyan));
-      width: 0; transition: width 1.2s ease;
-    }
+    .skill-card:hover::before{transform:scaleX(1)}
+    .skill-card:hover{border-color:rgba(0,212,255,.3);box-shadow:var(--glow);transform:translateY(-4px)}
+    .skill-card h4{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--cyan);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    .skill-item{margin-bottom:13px}
+    .skill-name{display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:6px}
+    .skill-name span:last-child{color:var(--cyan);font-family:'Share Tech Mono',monospace;font-size:.75rem}
+    .skill-bar{background:var(--bg3);border-radius:4px;height:4px;overflow:hidden}
+    .skill-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#0a2a4a,var(--cyan));width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
 
     /* ── Projects ── */
-    #projects { padding: 100px 5%; }
-    .projects-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px; max-width: 1200px; margin: 0 auto;
+    .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;max-width:1200px;margin:0 auto}
+    .project-card{
+      background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:26px;
+      display:flex;flex-direction:column;
+      transition:box-shadow .15s,border-color .15s;
+      transform-style:preserve-3d;cursor:pointer;position:relative;overflow:hidden;
     }
-    .project-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 12px; padding: 24px;
-      display: flex; flex-direction: column;
-      transition: border-color .2s, transform .2s, box-shadow .2s;
+    .project-card .shine{
+      position:absolute;inset:0;border-radius:14px;
+      background:none;transition:background .2s;pointer-events:none;z-index:1;
     }
-    .project-card:hover {
-      border-color: var(--cyan); transform: translateY(-4px); box-shadow: var(--glow);
+    .project-card:hover{border-color:rgba(0,212,255,.4);box-shadow:0 20px 60px rgba(0,0,0,.5),var(--glow)}
+    .project-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;position:relative;z-index:2}
+    .project-icon{font-size:1.6rem}
+    .project-links a{
+      font-size:.72rem;color:var(--muted);padding:3px 10px;
+      border:1px solid var(--border);border-radius:4px;margin-left:6px;
+      transition:all .2s;
     }
-    .project-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-    .project-icon { font-size: 1.5rem; }
-    .project-links a {
-      font-size: .75rem; color: var(--muted);
-      padding: 3px 10px; border: 1px solid var(--border);
-      border-radius: 4px; margin-left: 6px;
-      transition: all .2s;
+    .project-links a:hover{border-color:var(--cyan);color:var(--cyan)}
+    .project-card h3{font-size:.98rem;font-weight:600;color:#fff;margin-bottom:8px;position:relative;z-index:2}
+    .project-card p{font-size:.82rem;color:var(--muted);line-height:1.65;flex:1;margin-bottom:16px;position:relative;z-index:2}
+    .tags{display:flex;flex-wrap:wrap;gap:6px;position:relative;z-index:2}
+    .tag{
+      font-size:.68rem;padding:2px 8px;border-radius:4px;
+      background:rgba(0,212,255,.07);color:var(--cyan);
+      border:1px solid rgba(0,212,255,.18);
+      font-family:'Share Tech Mono',monospace;
     }
-    .project-links a:hover { border-color: var(--cyan); color: var(--cyan); }
-    .project-card h3 { font-size: 1rem; font-weight: 600; color: #fff; margin-bottom: 8px; }
-    .project-card p { font-size: .83rem; color: var(--muted); line-height: 1.6; flex: 1; margin-bottom: 16px; }
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .tag {
-      font-size: .7rem; padding: 2px 8px; border-radius: 4px;
-      background: rgba(0,212,255,.08); color: var(--cyan);
-      border: 1px solid rgba(0,212,255,.2);
-      font-family: 'Share Tech Mono', monospace;
+
+    /* ── Cyber section ── */
+    .cyber-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;max-width:900px;margin:0 auto}
+    .cyber-card{
+      background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+      padding:20px;text-align:center;transition:all .3s;
     }
+    .cyber-card:hover{border-color:var(--cyan);box-shadow:var(--glow);transform:translateY(-4px)}
+    .cyber-card .icon{font-size:2rem;margin-bottom:10px}
+    .cyber-card h4{font-size:.85rem;color:#fff;font-weight:600;margin-bottom:4px}
+    .cyber-card p{font-size:.75rem;color:var(--muted)}
 
     /* ── Contact ── */
-    #contact { padding: 100px 5%; background: var(--bg2); text-align: center; }
-    .contact-inner { max-width: 600px; margin: 0 auto; }
-    .contact-inner p { color: var(--muted); margin-bottom: 32px; line-height: 1.7; }
-    .contact-links { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-    .contact-link {
-      display: flex; align-items: center; gap: 8px;
-      padding: 12px 24px; border-radius: 8px;
-      border: 1px solid var(--border); font-size: .88rem;
-      color: var(--muted); transition: all .2s;
+    .contact-inner{max-width:580px;margin:0 auto;text-align:center}
+    .contact-inner p{color:var(--muted);margin-bottom:36px;line-height:1.8}
+    .contact-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+    .contact-link{
+      display:flex;align-items:center;gap:8px;
+      padding:13px 26px;border-radius:8px;
+      border:1px solid var(--border);font-size:.87rem;color:var(--muted);
+      transition:all .25s;
     }
-    .contact-link:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: var(--glow); }
+    .contact-link:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:var(--glow)}
 
-    /* ── Footer ── */
-    footer {
-      text-align: center; padding: 28px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: .78rem; color: #484f58;
-      border-top: 1px solid var(--border);
+    /* Footer */
+    footer{
+      position:relative;z-index:1;text-align:center;padding:30px;
+      border-top:1px solid var(--border);
+      font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--muted);
     }
-    footer span { color: var(--cyan); }
+    footer span{color:var(--cyan)}
 
-    /* ── Fade-in ── */
-    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
-    .fade-in.visible { opacity: 1; transform: none; }
+    /* Reveal animation */
+    .reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease}
+    .reveal.visible{opacity:1;transform:none}
+    .reveal-delay-1{transition-delay:.1s}
+    .reveal-delay-2{transition-delay:.2s}
+    .reveal-delay-3{transition-delay:.3s}
   </style>
 </head>
 <body>
 
-<canvas id="matrix-bg"></canvas>
+<div id="progress"></div>
+<canvas id="webgl"></canvas>
 
 <!-- Nav -->
-<nav>
-  <span class="nav-logo">lucas<span style="color:#fff">.</span><span style="color:#7ecfff">dev</span></span>
+<nav id="navbar">
+  <div class="nav-logo">lucas<span>.</span><span style="color:var(--cyan2)">dev</span></div>
   <ul class="nav-links">
-    <li><a href="#about">Sobre</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#projects">Projetos</a></li>
-    <li><a href="#contact">Contato</a></li>
-    <li><a href="https://github.com/Luca-css" target="_blank">GitHub ↗</a></li>
+    <li><a href="#about">sobre</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#cyber">cyber</a></li>
+    <li><a href="#projects">projetos</a></li>
+    <li><a href="#contact">contato</a></li>
+    <li><a href="https://github.com/Luca-css" target="_blank">github ↗</a></li>
   </ul>
 </nav>
 
 <!-- Hero -->
 <section id="hero">
-  <div class="hero-tag">_ disponível para projetos</div>
-  <h1 class="hero-name">Lucas<span>.</span></h1>
+  <div class="hero-badge">_ disponível para projetos e oportunidades</div>
+  <div class="hero-name">
+    <div class="glitch" data-text="Lucas">Lucas</div><span class="hero-dot">.</span>
+  </div>
   <p class="hero-sub" id="typed"></p>
   <div class="hero-btns">
     <a href="#projects" class="btn btn-primary">Ver Projetos</a>
     <a href="#contact" class="btn btn-outline">Entrar em Contato</a>
   </div>
-  <div class="scroll-hint">scroll</div>
+  <div class="scroll-line">scroll</div>
 </section>
 
 <!-- About -->
-<section id="about">
-  <div class="section-title">sobre</div>
-  <h2>Quem sou eu</h2>
-  <div class="about-grid fade-in">
+<section id="about" class="section section-alt">
+  <div class="s-label">sobre mim</div>
+  <h2>Quem sou <span>eu</span></h2>
+  <div class="about-grid reveal">
     <div class="about-text">
-      <p>
-        Sou <strong>Analista de TI N3</strong> com foco em segurança de infraestrutura, automação de operações e desenvolvimento de ferramentas internas. Trabalho na intersecção entre TI corporativa e desenvolvimento de software.
-      </p>
-      <p>
-        Especializado em <strong>ambientes Windows Server</strong>, monitoro e respondo a incidentes de segurança, automatizo processos repetitivos com Python e PowerShell, e desenvolvo dashboards e relatórios para análise de infraestrutura.
-      </p>
-      <p>
-        Experiência com <strong>Active Directory</strong>, GPOs, hardening de servidores, análise de logs de segurança e resposta a incidentes (DFIR).
-      </p>
+      <p>Sou <strong>Analista de TI N3</strong> com sólida experiência em <strong>cibersegurança</strong>, segurança de infraestrutura e desenvolvimento de ferramentas internas. Atuo na interseção entre segurança ofensiva/defensiva e desenvolvimento de software.</p>
+      <p>Trabalho com <strong>análise de vulnerabilidades</strong>, hardening de servidores, resposta a incidentes (DFIR), monitoramento SIEM e automação de operações com Python, PHP e PowerShell.</p>
+      <p>Experiência em ambientes <strong>Windows Server e Linux</strong> — Active Directory, GPOs, análise forense, redes e automação de suporte N3.</p>
       <ul class="info-list">
         <li><span class="info-label">cargo</span><span>Analista de TI N3</span></li>
         <li><span class="info-label">empresa</span><span>TrustIT - Confiança e Tecnologia</span></li>
         <li><span class="info-label">local</span><span>Brasil 🇧🇷</span></li>
-        <li><span class="info-label">foco</span><span>Segurança · Automação · Dev</span></li>
+        <li><span class="info-label">foco</span><span>Cibersegurança · Automação · Dev</span></li>
+        <li><span class="info-label">github</span><a href="https://github.com/Luca-css">github.com/Luca-css</a></li>
       </ul>
     </div>
-    <div class="code-block">
+    <div class="code-3d">
+<div style="margin-bottom:12px">
+  <span class="dot-bar dot-red"></span>
+  <span class="dot-bar dot-yel"></span>
+  <span class="dot-bar dot-grn"></span>
+</div>
 <span class="cm">// perfil técnico</span>
-<span class="kw">const</span> <span class="cy">lucas</span> = {
-  <span class="st">"stack"</span>: [
-    <span class="st">"Python"</span>, <span class="st">"PHP"</span>,
-    <span class="st">"PowerShell"</span>, <span class="st">"JavaScript"</span>,
-    <span class="st">"SQL"</span>, <span class="st">"Bash"</span>,
-    <span class="st">"Flask"</span>, <span class="st">"HTML/CSS"</span>
-  ],
-  <span class="st">"infra"</span>: [
-    <span class="st">"Windows Server"</span>,
-    <span class="st">"Active Directory"</span>,
-    <span class="st">"Linux"</span>, <span class="st">"Zabbix"</span>
-  ],
-  <span class="st">"security"</span>: [
-    <span class="st">"SIEM"</span>, <span class="st">"SOC"</span>,
-    <span class="st">"Incident Response"</span>,
-    <span class="st">"Hardening"</span>, <span class="st">"DFIR"</span>
-  ],
-  <span class="st">"nivel"</span>: <span class="st">"Sênior"</span>
-}
+<br/><span class="kw">class</span> <span class="cl">Lucas</span>:
+<br/>  <span class="cy">foco</span>     = [<span class="st">"Cibersegurança"</span>, <span class="st">"SOC"</span>,
+<br/>             <span class="st">"Pentest"</span>, <span class="st">"DFIR"</span>]
+<br/>  <span class="cy">stack</span>    = [<span class="st">"Python"</span>, <span class="st">"PHP"</span>,
+<br/>             <span class="st">"PowerShell"</span>, <span class="st">"JS"</span>,
+<br/>             <span class="st">"SQL"</span>, <span class="st">"Bash"</span>]
+<br/>  <span class="cy">infra</span>    = [<span class="st">"Windows Server"</span>,
+<br/>             <span class="st">"Linux"</span>, <span class="st">"Active Directory"</span>]
+<br/>  <span class="cy">security</span> = [<span class="st">"SIEM"</span>, <span class="st">"Hardening"</span>,
+<br/>             <span class="st">"Vuln Assessment"</span>]
+<br/>  <span class="cy">nivel</span>    = <span class="st">"Sênior"</span>
     </div>
   </div>
 </section>
 
 <!-- Skills -->
-<section id="skills">
-  <div class="section-title">habilidades</div>
-  <h2>Stack Técnica</h2>
-  <div class="skills-grid fade-in">
-    <div class="skill-card">
-      <h4>Linguagens</h4>
+<section id="skills" class="section">
+  <div class="s-label">habilidades</div>
+  <h2>Stack <span>Técnica</span></h2>
+  <div class="skills-grid reveal">
+    <div class="skill-card reveal reveal-delay-1">
+      <h4>⌨ Linguagens</h4>
       <div class="skill-item"><div class="skill-name"><span>Python</span><span>95%</span></div><div class="skill-bar"><div class="skill-fill" data-w="95"></div></div></div>
       <div class="skill-item"><div class="skill-name"><span>PowerShell</span><span>90%</span></div><div class="skill-bar"><div class="skill-fill" data-w="90"></div></div></div>
       <div class="skill-item"><div class="skill-name"><span>PHP</span><span>78%</span></div><div class="skill-bar"><div class="skill-fill" data-w="78"></div></div></div>
       <div class="skill-item"><div class="skill-name"><span>JavaScript</span><span>70%</span></div><div class="skill-bar"><div class="skill-fill" data-w="70"></div></div></div>
-      <div class="skill-item"><div class="skill-name"><span>SQL</span><span>75%</span></div><div class="skill-bar"><div class="skill-fill" data-w="75"></div></div></div>
-      <div class="skill-item"><div class="skill-name"><span>Bash</span><span>65%</span></div><div class="skill-bar"><div class="skill-fill" data-w="65"></div></div></div>
+      <div class="skill-item"><div class="skill-name"><span>SQL / Bash</span><span>75%</span></div><div class="skill-bar"><div class="skill-fill" data-w="75"></div></div></div>
     </div>
-    <div class="skill-card">
-      <h4>Segurança & Infra</h4>
+    <div class="skill-card reveal reveal-delay-2">
+      <h4>🔒 Segurança & Infra</h4>
       <div class="skill-item"><div class="skill-name"><span>Windows Server</span><span>95%</span></div><div class="skill-bar"><div class="skill-fill" data-w="95"></div></div></div>
       <div class="skill-item"><div class="skill-name"><span>Active Directory</span><span>88%</span></div><div class="skill-bar"><div class="skill-fill" data-w="88"></div></div></div>
+      <div class="skill-item"><div class="skill-name"><span>Cibersegurança</span><span>85%</span></div><div class="skill-bar"><div class="skill-fill" data-w="85"></div></div></div>
       <div class="skill-item"><div class="skill-name"><span>Incident Response</span><span>85%</span></div><div class="skill-bar"><div class="skill-fill" data-w="85"></div></div></div>
       <div class="skill-item"><div class="skill-name"><span>Linux</span><span>72%</span></div><div class="skill-bar"><div class="skill-fill" data-w="72"></div></div></div>
-      <div class="skill-item"><div class="skill-name"><span>Zabbix / Monitoring</span><span>80%</span></div><div class="skill-bar"><div class="skill-fill" data-w="80"></div></div></div>
     </div>
-    <div class="skill-card">
-      <h4>Dev & Ferramentas</h4>
-      <div class="skill-item"><div class="skill-name"><span>Flask / APIs REST</span><span>80%</span></div><div class="skill-bar"><div class="skill-fill" data-w="80"></div></div></div>
+    <div class="skill-card reveal reveal-delay-3">
+      <h4>🛠 Dev & Ferramentas</h4>
+      <div class="skill-item"><div class="skill-name"><span>Flask / REST API</span><span>80%</span></div><div class="skill-bar"><div class="skill-fill" data-w="80"></div></div></div>
       <div class="skill-item"><div class="skill-name"><span>PHP + MySQL</span><span>78%</span></div><div class="skill-bar"><div class="skill-fill" data-w="78"></div></div></div>
       <div class="skill-item"><div class="skill-name"><span>Git / GitHub</span><span>82%</span></div><div class="skill-bar"><div class="skill-fill" data-w="82"></div></div></div>
-      <div class="skill-item"><div class="skill-name"><span>Docker</span><span>60%</span></div><div class="skill-bar"><div class="skill-fill" data-w="60"></div></div></div>
       <div class="skill-item"><div class="skill-name"><span>SQL Server / MySQL</span><span>75%</span></div><div class="skill-bar"><div class="skill-fill" data-w="75"></div></div></div>
-      <div class="skill-item"><div class="skill-name"><span>HTML / CSS</span><span>78%</span></div><div class="skill-bar"><div class="skill-fill" data-w="78"></div></div></div>
+      <div class="skill-item"><div class="skill-name"><span>Docker</span><span>60%</span></div><div class="skill-bar"><div class="skill-fill" data-w="60"></div></div></div>
     </div>
   </div>
 </section>
 
-<!-- Projects -->
-<section id="projects">
-  <div class="section-title">projetos</div>
-  <h2>Trabalhos em Destaque</h2>
-  <div class="projects-grid fade-in">
+<!-- Cybersecurity -->
+<section id="cyber" class="section section-alt">
+  <div class="s-label">cibersegurança</div>
+  <h2>Áreas de <span>Segurança</span></h2>
+  <div class="cyber-grid reveal">
+    <div class="cyber-card"><div class="icon">🔍</div><h4>Pentest</h4><p>Testes de invasão e avaliação de vulnerabilidades em redes e sistemas</p></div>
+    <div class="cyber-card"><div class="icon">🛡️</div><h4>SOC / SIEM</h4><p>Monitoramento de eventos, detecção de ameaças e análise de alertas</p></div>
+    <div class="cyber-card"><div class="icon">🚨</div><h4>Incident Response</h4><p>Triagem forense, contenção e análise de incidentes de segurança</p></div>
+    <div class="cyber-card"><div class="icon">🔐</div><h4>Hardening</h4><p>Configuração segura de servidores Windows/Linux e Active Directory</p></div>
+    <div class="cyber-card"><div class="icon">🌐</div><h4>Network Security</h4><p>Análise de tráfego, firewall, IDS/IPS e segmentação de redes</p></div>
+    <div class="cyber-card"><div class="icon">📋</div><h4>Vuln Assessment</h4><p>Varredura e avaliação de vulnerabilidades com relatório de risco</p></div>
+  </div>
+</section>
 
-    <div class="project-card">
-      <div class="project-top">
-        <span class="project-icon">🛡️</span>
-        <div class="project-links">
-          <a href="https://github.com/Luca-css/siem-dashboard" target="_blank">GitHub</a>
-        </div>
-      </div>
+<!-- Projects -->
+<section id="projects" class="section">
+  <div class="s-label">projetos</div>
+  <h2>Trabalhos em <span>Destaque</span></h2>
+  <div class="projects-grid">
+
+    <div class="project-card reveal"><div class="shine"></div>
+      <div class="project-top"><span class="project-icon">🛡️</span><div class="project-links"><a href="https://github.com/Luca-css/siem-dashboard" target="_blank">GitHub</a></div></div>
       <h3>SIEM Dashboard</h3>
-      <p>Dashboard de segurança em tempo real. Agrega eventos de múltiplos servidores, detecta brute force automaticamente e exibe alertas ativos com API REST.</p>
-      <div class="tags"><span class="tag">Python</span><span class="tag">Flask</span><span class="tag">SIEM</span><span class="tag">Windows Security</span></div>
+      <p>Dashboard de segurança em tempo real. Detecta brute force automaticamente, exibe alertas ativos e eventos de múltiplos servidores via Flask + API REST.</p>
+      <div class="tags"><span class="tag">Python</span><span class="tag">Flask</span><span class="tag">SIEM</span><span class="tag">Security</span></div>
     </div>
 
-    <div class="project-card">
-      <div class="project-top">
-        <span class="project-icon">🚨</span>
-        <div class="project-links">
-          <a href="https://github.com/Luca-css/incident-response-toolkit" target="_blank">GitHub</a>
-        </div>
-      </div>
+    <div class="project-card reveal reveal-delay-1"><div class="shine"></div>
+      <div class="project-top"><span class="project-icon">🚨</span><div class="project-links"><a href="https://github.com/Luca-css/incident-response-toolkit" target="_blank">GitHub</a></div></div>
       <h3>Incident Response Toolkit</h3>
-      <p>Triage forense automatizado para resposta a incidentes. Coleta processos, conexões TCP, autoruns, eventos e empacota evidências em ZIP.</p>
+      <p>Triage forense automatizado — coleta processos, conexões TCP, autoruns, eventos de segurança e empacota evidências em ZIP para análise.</p>
       <div class="tags"><span class="tag">Python</span><span class="tag">DFIR</span><span class="tag">Forensics</span><span class="tag">SOC</span></div>
     </div>
 
-    <div class="project-card">
-      <div class="project-top">
-        <span class="project-icon">📊</span>
-        <div class="project-links">
-          <a href="https://github.com/Luca-css/server-dashboard" target="_blank">GitHub</a>
-        </div>
-      </div>
+    <div class="project-card reveal reveal-delay-2"><div class="shine"></div>
+      <div class="project-top"><span class="project-icon">📊</span><div class="project-links"><a href="https://github.com/Luca-css/server-dashboard" target="_blank">GitHub</a></div></div>
       <h3>Server Dashboard</h3>
-      <p>Dashboard web com atualização automática para monitoramento de CPU, RAM, disco e serviços críticos. Backend Flask com API REST.</p>
+      <p>Dashboard web com atualização automática — monitora CPU, RAM, disco e serviços críticos em tempo real. Backend Flask com API REST.</p>
       <div class="tags"><span class="tag">Python</span><span class="tag">Flask</span><span class="tag">JavaScript</span><span class="tag">REST API</span></div>
     </div>
 
-    <div class="project-card">
-      <div class="project-top">
-        <span class="project-icon">🔍</span>
-        <div class="project-links">
-          <a href="https://github.com/Luca-css/windows-security-auditor" target="_blank">GitHub</a>
-        </div>
-      </div>
+    <div class="project-card reveal"><div class="shine"></div>
+      <div class="project-top"><span class="project-icon">🔍</span><div class="project-links"><a href="https://github.com/Luca-css/windows-security-auditor" target="_blank">GitHub</a></div></div>
       <h3>Windows Security Auditor</h3>
-      <p>Auditoria do Security Event Log do Windows. Detecta logins suspeitos, falhas e atividades anômalas. Gera relatório HTML interativo.</p>
-      <div class="tags"><span class="tag">Python</span><span class="tag">PowerShell</span><span class="tag">Event Log</span><span class="tag">Audit</span></div>
+      <p>Auditoria do Security Event Log. Detecta logins suspeitos, falhas, brute force e atividades anômalas. Relatório HTML interativo.</p>
+      <div class="tags"><span class="tag">Python</span><span class="tag">PowerShell</span><span class="tag">Audit</span><span class="tag">Windows</span></div>
     </div>
 
-    <div class="project-card">
-      <div class="project-top">
-        <span class="project-icon">🗂️</span>
-        <div class="project-links">
-          <a href="https://github.com/Luca-css/ad-hardening-toolkit" target="_blank">GitHub</a>
-        </div>
-      </div>
+    <div class="project-card reveal reveal-delay-1"><div class="shine"></div>
+      <div class="project-top"><span class="project-icon">🗂️</span><div class="project-links"><a href="https://github.com/Luca-css/ad-hardening-toolkit" target="_blank">GitHub</a></div></div>
       <h3>AD Hardening Toolkit</h3>
-      <p>Auditoria e hardening de Active Directory. Identifica contas inativas, senhas sem expiração, grupos privilegiados e GPOs vulneráveis.</p>
+      <p>Auditoria e hardening de Active Directory — contas inativas, senhas sem expiração, grupos privilegiados e GPOs vulneráveis.</p>
       <div class="tags"><span class="tag">PowerShell</span><span class="tag">Active Directory</span><span class="tag">Hardening</span></div>
     </div>
 
-    <div class="project-card">
-      <div class="project-top">
-        <span class="project-icon">🌐</span>
-        <div class="project-links">
-          <a href="https://github.com/Luca-css/network-scanner" target="_blank">GitHub</a>
-        </div>
-      </div>
+    <div class="project-card reveal reveal-delay-2"><div class="shine"></div>
+      <div class="project-top"><span class="project-icon">🌐</span><div class="project-links"><a href="https://github.com/Luca-css/network-scanner" target="_blank">GitHub</a></div></div>
       <h3>Network Scanner</h3>
-      <p>Descoberta e inventário de rede com scan paralelo. Coleta hostname, MAC, portas abertas e gera relatório HTML com alertas de segurança.</p>
-      <div class="tags"><span class="tag">Python</span><span class="tag">Networking</span><span class="tag">Security</span><span class="tag">Inventory</span></div>
+      <p>Descoberta e inventário de rede com scan paralelo — hostname, MAC, portas abertas e relatório HTML com alertas de segurança.</p>
+      <div class="tags"><span class="tag">Python</span><span class="tag">Networking</span><span class="tag">Security</span></div>
     </div>
 
-    <div class="project-card">
-      <div class="project-top">
-        <span class="project-icon">🖥️</span>
-        <div class="project-links">
-          <a href="https://github.com/Luca-css/infra-inventory" target="_blank">GitHub</a>
-        </div>
-      </div>
+    <div class="project-card reveal"><div class="shine"></div>
+      <div class="project-top"><span class="project-icon">🖥️</span><div class="project-links"><a href="https://github.com/Luca-css/infra-inventory" target="_blank">GitHub</a></div></div>
       <h3>Infrastructure Inventory</h3>
-      <p>Inventário completo de servidores Windows — hardware, OS, softwares instalados, serviços, usuários, rede e hotfixes em relatório HTML.</p>
-      <div class="tags"><span class="tag">Python</span><span class="tag">WMI</span><span class="tag">PowerShell</span><span class="tag">Reporting</span></div>
+      <p>Inventário completo de servidores — hardware, OS, softwares, serviços, usuários, rede e hotfixes em relatório HTML.</p>
+      <div class="tags"><span class="tag">Python</span><span class="tag">WMI</span><span class="tag">PowerShell</span></div>
     </div>
 
-    <div class="project-card">
-      <div class="project-top">
-        <span class="project-icon">📋</span>
-        <div class="project-links">
-          <a href="https://github.com/Luca-css/sql-report-generator" target="_blank">GitHub</a>
-        </div>
-      </div>
+    <div class="project-card reveal reveal-delay-1"><div class="shine"></div>
+      <div class="project-top"><span class="project-icon">📋</span><div class="project-links"><a href="https://github.com/Luca-css/sql-report-generator" target="_blank">GitHub</a></div></div>
       <h3>SQL Report Generator</h3>
-      <p>Gera relatórios HTML profissionais a partir de queries SQL Server configuradas em JSON. Dashboard visual pronto para apresentações.</p>
+      <p>Relatórios HTML a partir de queries SQL Server via configuração JSON. Dashboard visual pronto para apresentações.</p>
       <div class="tags"><span class="tag">Python</span><span class="tag">SQL Server</span><span class="tag">Reporting</span></div>
     </div>
 
@@ -465,108 +431,202 @@
 </section>
 
 <!-- Contact -->
-<section id="contact">
-  <div class="section-title">contato</div>
-  <h2>Vamos conversar</h2>
-  <div class="contact-inner fade-in">
-    <p>Estou aberto a oportunidades, projetos e colaborações na área de segurança de TI, automação e desenvolvimento de ferramentas. Entre em contato!</p>
+<section id="contact" class="section section-alt">
+  <div class="s-label">contato</div>
+  <h2>Vamos <span>conversar</span></h2>
+  <div class="contact-inner reveal">
+    <p>Aberto a oportunidades, projetos e colaborações em cibersegurança, TI e desenvolvimento de ferramentas. Entre em contato pelo GitHub ou LinkedIn.</p>
     <div class="contact-links">
-      <a class="contact-link" href="https://github.com/Luca-css" target="_blank">
-        ⌥ GitHub
-      </a>
-      <a class="contact-link" href="https://linkedin.com/in/lucas-santos" target="_blank">
-        ↗ LinkedIn
-      </a>
+      <a class="contact-link" href="https://github.com/Luca-css" target="_blank">⌥ GitHub</a>
+      <a class="contact-link" href="https://linkedin.com/in/lucas-santos" target="_blank">↗ LinkedIn</a>
     </div>
   </div>
 </section>
 
 <footer>
-  Desenvolvido por <span>Lucas</span> · 2026 · <span>github.com/Luca-css</span>
+  Desenvolvido por <span>Lucas</span> · 2026 · <span>luca-css.github.io</span>
 </footer>
 
 <script>
-  // ── Matrix background ──
-  const canvas = document.getElementById('matrix-bg')
-  const ctx    = canvas.getContext('2d')
-  canvas.width  = window.innerWidth
-  canvas.height = window.innerHeight
-  window.addEventListener('resize', () => {
-    canvas.width  = window.innerWidth
-    canvas.height = window.innerHeight
-  })
-  const chars  = '01アイウエオカキクケコセキュリティサイバー'
-  const cols   = Math.floor(canvas.width / 18)
-  const drops  = Array(cols).fill(1)
-  function drawMatrix() {
-    ctx.fillStyle = 'rgba(2,12,27,0.05)'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = '#00d4ff'
-    ctx.font      = '14px Share Tech Mono'
-    drops.forEach((y, i) => {
-      ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * 18, y * 18)
-      if (y * 18 > canvas.height && Math.random() > 0.975) drops[i] = 0
-      drops[i]++
-    })
-  }
-  setInterval(drawMatrix, 60)
+// ── Three.js 3D Network ────────────────────────────────────────────────────
+const canvas   = document.getElementById('webgl')
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true })
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2))
+renderer.setSize(innerWidth, innerHeight)
 
-  // ── Typing animation ──
-  const lines = [
-    'Analista de TI N3 | Nível Sênior',
-    'Segurança de Servidores Windows & Linux',
-    'SIEM · SOC · Incident Response',
-    'Automação Python & PowerShell',
-    'Desenvolvimento de Ferramentas Internas',
-  ]
-  let li = 0, ci = 0, deleting = false
-  const el = document.getElementById('typed')
-  function type() {
-    const cur = lines[li]
-    if (!deleting) {
-      el.innerHTML = cur.slice(0, ++ci) + '<span class="cursor">_</span>'
-      if (ci === cur.length) { deleting = true; setTimeout(type, 1800); return; }
-    } else {
-      el.innerHTML = cur.slice(0, --ci) + '<span class="cursor">_</span>'
-      if (ci === 0) { deleting = false; li = (li + 1) % lines.length; }
+const scene  = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 100)
+camera.position.z = 18
+
+// Particles
+const COUNT = 110
+const positions = new Float32Array(COUNT * 3)
+const vels = []
+for (let i = 0; i < COUNT; i++) {
+  positions[i*3]   = (Math.random()-.5)*38
+  positions[i*3+1] = (Math.random()-.5)*24
+  positions[i*3+2] = (Math.random()-.5)*12
+  vels.push({ x:(Math.random()-.5)*.014, y:(Math.random()-.5)*.014, z:(Math.random()-.5)*.007 })
+}
+
+const ptGeo = new THREE.BufferGeometry()
+ptGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+const ptMat = new THREE.PointsMaterial({ color:0x00d4ff, size:.12, transparent:true, opacity:.85 })
+scene.add(new THREE.Points(ptGeo, ptMat))
+
+// Line connections
+const MAX_L = 400
+const lPos  = new Float32Array(MAX_L * 6)
+const lGeo  = new THREE.BufferGeometry()
+lGeo.setAttribute('position', new THREE.BufferAttribute(lPos, 3))
+const lMat  = new THREE.LineBasicMaterial({ color:0x00d4ff, transparent:true, opacity:.12 })
+const lines = new THREE.LineSegments(lGeo, lMat)
+scene.add(lines)
+
+// Wireframe icosahedron
+const icoMesh = new THREE.Mesh(
+  new THREE.IcosahedronGeometry(3.5, 1),
+  new THREE.MeshBasicMaterial({ color:0x00d4ff, wireframe:true, transparent:true, opacity:.07 })
+)
+scene.add(icoMesh)
+
+// Outer torus
+const torus = new THREE.Mesh(
+  new THREE.TorusGeometry(5.5, .015, 6, 80),
+  new THREE.MeshBasicMaterial({ color:0x00d4ff, transparent:true, opacity:.18 })
+)
+scene.add(torus)
+
+// Inner ring
+const ring2 = new THREE.Mesh(
+  new THREE.TorusGeometry(2.8, .01, 6, 60),
+  new THREE.MeshBasicMaterial({ color:0x7ecfff, transparent:true, opacity:.2 })
+)
+ring2.rotation.x = Math.PI / 3
+scene.add(ring2)
+
+let mx = 0, my = 0
+addEventListener('mousemove', e => { mx=(e.clientX/innerWidth-.5); my=(e.clientY/innerHeight-.5) })
+addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix()
+  renderer.setSize(innerWidth, innerHeight)
+})
+
+let frame = 0
+function animate() {
+  requestAnimationFrame(animate)
+  frame++
+
+  // Move particles
+  for (let i = 0; i < COUNT; i++) {
+    positions[i*3]   += vels[i].x
+    positions[i*3+1] += vels[i].y
+    positions[i*3+2] += vels[i].z
+    if (Math.abs(positions[i*3])   > 19) vels[i].x *= -1
+    if (Math.abs(positions[i*3+1]) > 12) vels[i].y *= -1
+    if (Math.abs(positions[i*3+2]) >  6) vels[i].z *= -1
+  }
+  ptGeo.attributes.position.needsUpdate = true
+
+  // Lines (every 2 frames for performance)
+  if (frame % 2 === 0) {
+    let li = 0
+    for (let i = 0; i < COUNT && li < MAX_L; i++) {
+      for (let j = i+1; j < COUNT && li < MAX_L; j++) {
+        const dx=positions[i*3]-positions[j*3], dy=positions[i*3+1]-positions[j*3+1], dz=positions[i*3+2]-positions[j*3+2]
+        if (dx*dx+dy*dy+dz*dz < 36) {
+          lPos[li*6]=positions[i*3]; lPos[li*6+1]=positions[i*3+1]; lPos[li*6+2]=positions[i*3+2]
+          lPos[li*6+3]=positions[j*3]; lPos[li*6+4]=positions[j*3+1]; lPos[li*6+5]=positions[j*3+2]
+          li++
+        }
+      }
     }
-    setTimeout(type, deleting ? 35 : 65)
-  }
-  type()
-
-  // ── Skill bars ──
-  function animateBars() {
-    document.querySelectorAll('.skill-fill').forEach(el => {
-      const w = el.dataset.w
-      const rect = el.getBoundingClientRect()
-      if (rect.top < window.innerHeight - 50) {
-        el.style.width = w + '%'
-      }
-    })
+    for (let i=li; i<MAX_L; i++) lPos.fill(0, i*6, i*6+6)
+    lGeo.attributes.position.needsUpdate = true
+    lGeo.setDrawRange(0, li*2)
   }
 
-  // ── Fade-in ──
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible')
-        animateBars()
-      }
-    })
-  }, { threshold: 0.1 })
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el))
+  // Rotate shapes
+  icoMesh.rotation.x += .0018; icoMesh.rotation.y += .003
+  torus.rotation.z   += .0015; torus.rotation.x   += .001
+  ring2.rotation.y   += .004;  ring2.rotation.z   += .002
 
-  // ── Active nav ──
-  const sections = document.querySelectorAll('section[id]')
-  window.addEventListener('scroll', () => {
-    let cur = ''
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 80) cur = s.id
-    })
-    document.querySelectorAll('.nav-links a').forEach(a => {
-      a.style.color = a.getAttribute('href') === '#' + cur ? 'var(--cyan)' : ''
-    })
+  // Camera follows mouse
+  camera.position.x += (mx*3 - camera.position.x) * .04
+  camera.position.y += (-my*2 - camera.position.y) * .04
+  camera.lookAt(0, 0, 0)
+
+  renderer.render(scene, camera)
+}
+animate()
+
+// ── Typing animation ───────────────────────────────────────────────────────
+const lines2 = [
+  'Analista de TI N3 | Nível Sênior',
+  'Cibersegurança | Pentest | SOC | DFIR',
+  'Segurança de Servidores Windows & Linux',
+  'Automação Python, PHP & PowerShell',
+  'SIEM · Incident Response · Hardening',
+]
+let li2=0, ci=0, del=false
+const el = document.getElementById('typed')
+function type() {
+  const cur = lines2[li2]
+  if (!del) {
+    el.innerHTML = cur.slice(0,++ci)+'<span class="cursor">_</span>'
+    if (ci===cur.length) { del=true; setTimeout(type,2000); return }
+  } else {
+    el.innerHTML = cur.slice(0,--ci)+'<span class="cursor">_</span>'
+    if (ci===0) { del=false; li2=(li2+1)%lines2.length }
+  }
+  setTimeout(type, del?32:65)
+}
+type()
+
+// ── Scroll progress bar ────────────────────────────────────────────────────
+addEventListener('scroll', () => {
+  const pct = scrollY/(document.body.scrollHeight-innerHeight)*100
+  document.getElementById('progress').style.width = pct+'%'
+})
+
+// ── Reveal on scroll ───────────────────────────────────────────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible')
+      e.target.querySelectorAll('.skill-fill').forEach(b => {
+        b.style.width = b.dataset.w+'%'
+      })
+    }
   })
+}, { threshold: 0.1 })
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el))
+
+// ── 3D card tilt ───────────────────────────────────────────────────────────
+document.querySelectorAll('.project-card').forEach(card => {
+  const shine = card.querySelector('.shine')
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect()
+    const x = ((e.clientX-r.left)/r.width-.5)*2
+    const y = ((e.clientY-r.top)/r.height-.5)*2
+    card.style.transform = `perspective(700px) rotateY(${x*10}deg) rotateX(${-y*7}deg) translateZ(8px) scale(1.02)`
+    shine.style.background = `radial-gradient(circle at ${(x+1)*50}% ${(y+1)*50}%, rgba(0,212,255,.18) 0%, transparent 65%)`
+  })
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = ''
+    shine.style.background = ''
+  })
+})
+
+// ── Active nav highlight ───────────────────────────────────────────────────
+const sections = document.querySelectorAll('section[id]')
+addEventListener('scroll', () => {
+  let cur = ''
+  sections.forEach(s => { if (scrollY >= s.offsetTop-90) cur = s.id })
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href')==='#'+cur)
+  })
+})
 </script>
 </body>
 </html>
